@@ -124,14 +124,16 @@ class DirChooserWidget(QWidget):
             subprocess.run(["git", "commit", "--allow-empty", "-m", "Initial commit"], cwd=cwd, check=True)
 
         # Add or update remote
+        # Disable any stored credentials to force token usage
+        subprocess.run(["git", "config", "--global", "credential.helper", ""], cwd=cwd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         try:
             subprocess.run(["git", "remote", "get-url", "origin"], cwd=cwd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             # Remote exists, update URL
             subprocess.run(["git", "remote", "set-url", "origin", repo_url], cwd=cwd, check=True)
         except subprocess.CalledProcessError:
             subprocess.run(["git", "remote", "add", "origin", repo_url], cwd=cwd, check=True)
-        # Determine branch to push – use repo's default branch
-        default_branch = resp.json().get("default_branch", "master")
+        # Determine branch to push – default to main
+        default_branch = "main"
         subprocess.run(["git", "checkout", "-B", default_branch], cwd=cwd, check=True)
         subprocess.run(["git", "push", "-u", "origin", default_branch], cwd=cwd, check=False)
         QMessageBox.information(self, "Success", f"Uploaded to {repo_url}")
