@@ -142,7 +142,7 @@ class DirChooserWidget(QWidget):
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("OpenClaw Control UI")
+        self.setWindowTitle("Qt5 Github Uploader")
         central = QWidget()
         layout = QVBoxLayout()
         login_wid = LoginWidget()
